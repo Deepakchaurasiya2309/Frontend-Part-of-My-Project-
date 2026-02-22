@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Kirana Express</title>
+  <link rel="stylesheet" href="style11.css">
+</head>
+<body>
+
+<header class="navbar">
+  <div class="logo">Kirana<span> Express</span></div>
+
+  <div class="location">
+     <span id="currentLocation">Select Location</span>
+  </div>
+
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search products...">
+    <button id="searchBtn">Search</button>
+  </div>
+
+  <nav class="nav-links">
+    <a href="#" data-section="homeSection">Home</a>
+    <a href="#" data-section="shopSection">Categories</a>
+    <a href="#" data-section="cartSection">Orders</a>
+  </nav>
+
+  <div class="user-profile">
+    <button id="loginBtn">Login</button>
+    <div class="cart-icon">
+      🛒 <span id="cartCount">0</span>
+    </div>
+  </div>
+</header>
+<section id="loginSection" class="section login-section">
+  <div class="login-card">
+    <h2>Welcome to Kirana Express</h2>
+    <p>Your hyperlocal grocery partner</p>
+
+    <input type="email" id="email" placeholder="Enter Email">
+    <input type="password" id="password" placeholder="Enter Password">
+    <button id="loginSubmit">Login</button>
+  </div>
+</section>
+<section id="homeSection" class="section hidden">
+  <div class="home-container">
+    <h2>Welcome to Kirana Express 👋</h2>
+    <p>Select a shop and start shopping fresh groceries.</p>
+
+    <button id="startShoppingBtn"> Start Shopping Now</button>
+  </div>
+</section>
+<section id="shopSection" class="section hidden">
+  <h2>Select a Shop</h2>
+  <div id="shops" class="card-grid"></div>
+</section>
+
+<section id="productSection" class="section hidden">
+  <h2>Products</h2>
+  <div id="products" class="card-grid"></div>
+<div class=""product-actions">
+  <button id="proceedToCartBtn">Proceed to Cart</button>
+</div>
+</section>
+<section id="cartSection" class="section hidden">
+  <h2>Your Cart</h2>
+  <div id="cartItems"></div>
+  <h3>Total: ₹<span id="total">0</span></h3>
+  <div class="checkout-options">
+  <button id="deliveryBtn">Place Order (Delivery)</button>
+  <button id="pickupBtn">Pickup After 30 Minutes</button>
+</div>
+</section>
+
+<section id="successSection" class="section hidden">
+  <h2 id="successMessage"></h2>
+</section>
+
+<script src="script.js"></script>
+</body>
+</html>
