@@ -6,6 +6,8 @@ const state = {
   cart: []
 };
 
+const GST_RATE = 0.02;
+
 const shops = [
   { id: 1, name: "Ravi Kirana" },
   { id: 2, name: "Gupta Store" },
@@ -22,6 +24,8 @@ const products = [
   { id: 6, name: "AAta", price: 30 },
 ];
 
+/* ---------------- SECTION CONTROL ---------------- */
+
 function showSection(id) {
   document.querySelectorAll(".section").forEach(sec =>
     sec.classList.add("hidden")
@@ -34,22 +38,15 @@ function updateCartCount() {
     state.cart.reduce((sum, item) => sum + item.qty, 0);
 }
 
-document.getElementById("loginSubmit").addEventListener("click", () => {
 
+document.getElementById("loginSubmit").addEventListener("click", () => {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
   if (email && password) {
     state.user = { email };
-
     document.getElementById("loginBtn").innerText = "Profile";
-
-    document.getElementById("email").value = "";
-    document.getElementById("password").value = "";
-
     showSection("homeSection");
-    
-
   } else {
     alert("Enter email and password");
   }
@@ -59,6 +56,7 @@ document.querySelector(".location").addEventListener("click", () => {
   const loc = prompt("Enter your location:");
   if (loc) document.getElementById("currentLocation").innerText = loc;
 });
+
 
 document.getElementById("searchBtn").addEventListener("click", () => {
   const query = document.getElementById("searchInput").value.toLowerCase();
@@ -77,14 +75,11 @@ document.getElementById("searchBtn").addEventListener("click", () => {
   renderProducts(filtered);
 });
 
-
 document.querySelectorAll("[data-section]").forEach(link => {
   link.addEventListener("click", e => {
     e.preventDefault();
-
     const target = link.dataset.section;
 
-    // If not logged in
     if (!state.user && target !== "loginSection") {
       alert("Please login first");
       showSection("loginSection");
@@ -102,7 +97,9 @@ document.querySelectorAll("[data-section]").forEach(link => {
     if (target === "shopSection") renderShops();
   });
 });
-document.getElementById("startShoppingBtn").addEventListener("click", function () {
+
+
+document.getElementById("startShoppingBtn").addEventListener("click", () => {
   showSection("shopSection");
   renderShops();
 });
@@ -117,6 +114,7 @@ document.querySelector(".cart-icon").addEventListener("click", () => {
   renderCart();
 });
 
+/* ---------------- SHOPS ---------------- */
 
 function renderShops() {
   const container = document.getElementById("shops");
@@ -151,21 +149,23 @@ function renderProducts(productList) {
       <p>₹${product.price}</p>
       <button>Add to Cart</button>
     `;
- const btn = card.querySelector("button");
 
-btn.addEventListener("click", () => {
-  addToCart(product);
- const currentItem = state.cart.find(item => item.id === product.id);
- const qty = currentItem ? currentItem.qty : 1;
+    const btn = card.querySelector("button");
 
-  btn.innerText = `Added (${qty}) ✓`;
-  btn.style.backgroundColor = "#03f303";
+    btn.addEventListener("click", () => {
+      addToCart(product);
+      const currentItem = state.cart.find(item => item.id === product.id);
+      const qty = currentItem ? currentItem.qty : 1;
 
-  setTimeout(() => {
-    btn.innerText = "Add to Cart";
-    btn.style.backgroundColor = "#ee0f13";
-  }, 1200);
-});
+      btn.innerText = `Added (${qty}) ✓`;
+      btn.style.backgroundColor = "#91f223";
+
+      setTimeout(() => {
+        btn.innerText = "Add to Cart";
+        btn.style.backgroundColor = "#8ceeec";
+      }, 1200);
+    });
+
     container.appendChild(card);
   });
 }
@@ -184,61 +184,116 @@ function addToCart(product) {
 function renderCart() {
   const container = document.getElementById("cartItems");
   container.innerHTML = "";
-  let total = 0;
+
+  let subtotal = 0;
 
   state.cart.forEach(item => {
-    total += item.price * item.qty;
+    subtotal += item.price * item.qty;
 
     const div = document.createElement("div");
     div.className = "cart-item";
     div.innerHTML = `
-      <span>${item.name} x ${item.qty}</span>
+      <span>${item.name}</span>
+      <div>
+        <button class="minus">-</button>
+        <span>${item.qty}</span>
+        <button class="plus">+</button>
+      </div>
       <span>₹${item.price * item.qty}</span>
+      <button class="remove">Remove</button>
     `;
+
+    div.querySelector(".plus").addEventListener("click", () => {
+      item.qty++;
+      updateCartCount();
+      renderCart();
+    });
+
+    div.querySelector(".minus").addEventListener("click", () => {
+      if (item.qty > 1) item.qty--;
+      updateCartCount();
+      renderCart();
+    });
+
+    div.querySelector(".remove").addEventListener("click", () => {
+      state.cart = state.cart.filter(p => p.id !== item.id);
+      updateCartCount();
+      renderCart();
+    });
+
     container.appendChild(div);
   });
 
-  document.getElementById("total").innerText = total;
+  document.getElementById("subtotal").innerText = subtotal.toFixed(2);
 }
 
+
+document.getElementById("pickupBtn").addEventListener("click", () => {
+  processOrder("Pickup");
+});
 
 document.getElementById("deliveryBtn").addEventListener("click", () => {
   processOrder("Delivery");
 });
 
-document.getElementById("pickupBtn").addEventListener("click", () => {
-  processOrder("Pickup after 30 minutes");
-});
 function processOrder(type) {
+
   if (state.cart.length === 0) {
     alert("Cart is empty");
     return;
   }
 
-  const total = state.cart.reduce((sum, item) =>
+  let subtotal = state.cart.reduce((sum, item) =>
     sum + item.price * item.qty, 0
   );
+
+  let gst = subtotal * GST_RATE;
+  let serviceCharge = 0;
+  let pickupText = "";
+
+  if (type === "Pickup") {
+    const pickupTime = document.getElementById("pickupTime").value;
+
+    if (pickupTime === "15") { serviceCharge = 15; pickupText = "15 Minutes"; }
+    if (pickupTime === "30") { serviceCharge = 10; pickupText = "30 Minutes"; }
+    if (pickupTime === "60") { serviceCharge = 5; pickupText = "1 Hour"; }
+  }
+
+  if (type === "Delivery") {
+    serviceCharge = 10;
+  }
+
+  let total = subtotal + gst + serviceCharge;
 
   state.cart = [];
   updateCartCount();
   renderCart();
 
   showSection("successSection");
-  document.getElementById("successMessage").innerText =
-    `Your order of ₹${total} is confirmed for ${type}.`;
+
+  document.getElementById("successMessage").innerHTML = `
+    <h3> Order Confirmed ✅</h3>
+    <p>Order Type: ${type}</p>
+    ${pickupText ? `<p>Pickup Time: ${pickupText}</p>` : ""}
+    <p>Subtotal: ₹${subtotal.toFixed(2)}</p>
+    <p>GST (2%): ₹${gst.toFixed(2)}</p>
+    <p>Service Charge: ₹${serviceCharge}</p>
+    <h3>Total Paid: ₹${total.toFixed(2)}</h3>
+  `;
 }
+
+
 const proceedBtn = document.getElementById("proceedToCartBtn");
 
 if (proceedBtn) {
   proceedBtn.addEventListener("click", function () {
-
     if (state.cart.length === 0) {
       alert("Your cart is empty!");
       return;
     }
-
     showSection("cartSection");
     renderCart();
   });
 }
+
 });
