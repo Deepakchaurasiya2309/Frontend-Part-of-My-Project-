@@ -11,7 +11,7 @@
   <div class="logo">Kirana<span> Express</span></div>
 
   <div class="location">
-     <span id="currentLocation">Select Location</span>
+     <span id="currentLocation">🌐 Select Shop Location</span>
   </div>
 
   <div class="search-bar">
@@ -32,6 +32,8 @@
     </div>
   </div>
 </header>
+
+<!-- LOGIN -->
 <section id="loginSection" class="section login-section">
   <div class="login-card">
     <h2>Welcome to Kirana Express</h2>
@@ -42,36 +44,62 @@
     <button id="loginSubmit">Login</button>
   </div>
 </section>
+
+<!-- HOME -->
 <section id="homeSection" class="section hidden">
   <div class="home-container">
     <h2>Welcome to Kirana Express 👋</h2>
+    <p>This platform allows you to select your own desired shop and purchase groceries easily.</p>
     <p>Select a shop and start shopping fresh groceries.</p>
 
-    <button id="startShoppingBtn"> Start Shopping Now</button>
+    <button id="startShoppingBtn">Start Shopping Now</button>
   </div>
 </section>
+
+<!-- SHOPS -->
 <section id="shopSection" class="section hidden">
   <h2>Select a Shop</h2>
   <div id="shops" class="card-grid"></div>
 </section>
 
+<!-- PRODUCTS -->
 <section id="productSection" class="section hidden">
   <h2>Products</h2>
   <div id="products" class="card-grid"></div>
-<div class=""product-actions">
-  <button id="proceedToCartBtn">Proceed to Cart</button>
-</div>
-</section>
-<section id="cartSection" class="section hidden">
-  <h2>Your Cart</h2>
-  <div id="cartItems"></div>
-  <h3>Total: ₹<span id="total">0</span></h3>
-  <div class="checkout-options">
-  <button id="deliveryBtn">Place Order (Delivery)</button>
-  <button id="pickupBtn">Pickup After 30 Minutes</button>
-</div>
+
+  <div class="product-actions">
+    <button id="proceedToCartBtn">Proceed to Cart</button>
+  </div>
+
 </section>
 
+<!-- CART -->
+<section id="cartSection" class="section hidden">
+  <h2>Your Cart</h2>
+
+  <div id="cartItems"></div>
+
+  <h3>Subtotal: ₹<span id="subtotal">0</span></h3>
+
+  <div class="checkout-options">
+    <h3>Pickup Timing</h3>
+
+    <select id="pickupTime">
+      <option value="15">Within 15 Minutes (₹15 service charge)</option>
+      <option value="30">Within 30 Minutes (₹10 service charge)</option>
+      <option value="60">Within 1 Hour (₹5 service charge)</option>
+    </select>
+
+    <button id="pickupBtn">Place Pickup Order</button>
+
+    <hr>
+
+    <button id="deliveryBtn">Place Delivery Order (+₹20 delivery charge)</button>
+  </div>
+
+</section>
+
+<!-- SUCCESS -->
 <section id="successSection" class="section hidden">
   <h2 id="successMessage"></h2>
 </section>
